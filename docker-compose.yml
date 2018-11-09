@@ -1,0 +1,25 @@
+version: '3'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      - 'MONGODB_USER=user'
+      - 'MONGODB_PASS=password!'
+    ports:
+      - '27017:27017'
+    command: mongod --smallfiles
+  sourcer:
+    build: sourcer
+    image: sourcer:1.0
+    container_name: sourcer
+    tty: true
+    links:
+      - mongodb
+    environment:
+      - 'MONGODB_URI=mongodb://mongodb:27017'
+      - 'TEAM_GAME=true'
+      - 'ENV_MESSAGE_JA={"topMessage": "This message is displayed on the top page not logged in."}'
+    ports:
+      - '80:5000'
+    command: npm run app
