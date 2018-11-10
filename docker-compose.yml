@@ -4,8 +4,8 @@ services:
     image: mongo:latest
     container_name: mongodb
     environment:
-      - 'MONGODB_USER=user'
-      - 'MONGODB_PASS=password!'
+      MONGODB_USER: 'user'
+      MONGODB_PASS: 'password!'
     ports:
       - '27017:27017'
     command: mongod --smallfiles
@@ -17,9 +17,9 @@ services:
     links:
       - mongodb
     environment:
-      - 'MONGODB_URI=mongodb://mongodb:27017'
-      - 'TEAM_GAME=true'
-      - 'ENV_MESSAGE_JA={"topMessage": "This message is displayed on the top page not logged in."}'
+      MONGODB_URI: mongodb://mongodb:27017
+      TEAM_GAME: 'true'
+      DISPLAY_LANGUAGE: 'ja'
     ports:
       - '80:5000'
     command: npm run app
