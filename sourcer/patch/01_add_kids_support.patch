@@ -1,5 +1,5 @@
 diff --git a/src/main/client/components/pages/Edit.tsx b/src/main/client/components/pages/Edit.tsx
-index 33a4242..c2002b3 100644
+index 33a4242..40bd6ce 100644
 --- a/src/main/client/components/pages/Edit.tsx
 +++ b/src/main/client/components/pages/Edit.tsx
 @@ -1,6 +1,6 @@
@@ -60,41 +60,41 @@ index 33a4242..c2002b3 100644
 +              <List style={{ paddingTop: '0px', paddingBottom: '0px' }}>
 +                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
 +                  <Button raised ripple colored onClick={this.clear.bind(this)}>
-+                      最初から
++                    {resource.codeClear}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.restore.bind(this)}>
-+                      戻す
++                    {resource.codeRestore}
 +                  </Button>
 +                  <Spacer />
 +                  <Button raised ripple colored onClick={this.insert('if () {} else {}', 12).bind(this)}>
-+                      もし...
++                    {resource.codeIf}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.insert('var x = 0;', 5).bind(this)}>
-+                      変数
++                    {resource.codeVariable}
 +                  </Button>
 +                </ListItem>
 +                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
 +                  <Button raised ripple colored onClick={this.insert('controller.ascent();').bind(this)}>
-+                      上昇
++                    {resource.codeAscent}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.insert('controller.descent();').bind(this)}>
-+                      下降
++                    {resource.codeDescent}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.insert('controller.fireLaser(0, 1);').bind(this)}>
-+                      攻撃
++                    {resource.codeFire}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.insert('controller.turn();').bind(this)}>
-+                      反転
++                    {resource.codeTurn}
 +                  </Button>
 +                  <Spacer />
 +                  <Button raised ripple colored onClick={this.insert('controller.altitude() < 50').bind(this)}>
-+                      高度は？
++                    {resource.codeAltitude}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.insert('controller.frame() % 10 === 0').bind(this)}>
-+                      何回目？
++                    {resource.codeFrame}
 +                  </Button>
 +                  <Button raised ripple colored onClick={this.insert('controller.scanEnemy(180, 180)').bind(this)}>
-+                      敵はいる？
++                    {resource.codeScanEnemy}
 +                  </Button>
 +                </ListItem>
 +              </List>
@@ -131,3 +131,65 @@ index 6bc8289..d2e0f77 100644
    public render() {
      const style = { fontSize: '14px !important', border: '1px solid lightgray' };
      return (
+diff --git a/src/main/client/components/resources/En.ts b/src/main/client/components/resources/En.ts
+index 2bb2574..55a4770 100644
+--- a/src/main/client/components/resources/En.ts
++++ b/src/main/client/components/resources/En.ts
+@@ -61,4 +61,15 @@ export class En implements StringResource {
+   public invalidNameTooLong = 'Name is too long.';
+   public invalidTeamNameEmpty = 'Team name is empty.';
+   public invalidTeamNameTooLong = 'Team name is too long.';
++  public codeClear = 'Clear';
++  public codeRestore = 'Restore';
++  public codeIf = 'If';
++  public codeVariable = 'Variable';
++  public codeAscent = 'Up';
++  public codeDescent = 'Down';
++  public codeFire = 'Fire';
++  public codeTurn = 'Turn';
++  public codeAltitude = 'How high?';
++  public codeFrame = 'How many times?';
++  public codeScanEnemy = 'Is there enemy?';
+ }
+diff --git a/src/main/client/components/resources/Ja.ts b/src/main/client/components/resources/Ja.ts
+index 6978729..efe8abb 100644
+--- a/src/main/client/components/resources/Ja.ts
++++ b/src/main/client/components/resources/Ja.ts
+@@ -61,4 +61,15 @@ export class Ja implements StringResource {
+   public invalidNameTooLong = 'プレイヤー名が20文字以内である必要があります。';
+   public invalidTeamNameEmpty = 'チーム名が未入力です。';
+   public invalidTeamNameTooLong = 'チーム名が20文字以内である必要があります。';
++  public codeClear = '最初から';
++  public codeRestore = '戻す';
++  public codeIf = 'もし';
++  public codeVariable = '変数';
++  public codeAscent = '上昇';
++  public codeDescent = '下降';
++  public codeFire = '攻撃';
++  public codeTurn = '反転';
++  public codeAltitude = '高度は？';
++  public codeFrame = '何回目？';
++  public codeScanEnemy = '敵はいる？';
+ }
+diff --git a/src/main/dts/StringResource.d.ts b/src/main/dts/StringResource.d.ts
+index 1c6407c..b2d20ff 100644
+--- a/src/main/dts/StringResource.d.ts
++++ b/src/main/dts/StringResource.d.ts
+@@ -60,6 +60,17 @@ export interface StringResource {
+   invalidNameTooLong: string;
+   invalidTeamNameEmpty: string;
+   invalidTeamNameTooLong: string;
++  codeClear: string;
++  codeRestore: string;
++  codeIf: string;
++  codeVariable: string;
++  codeAscent: string;
++  codeDescent: string;
++  codeFire: string;
++  codeTurn: string;
++  codeAltitude: string;
++  codeFrame: string;
++  codeScanEnemy: string;
+ }
+ 
+ type ResourceId = keyof StringResource;
