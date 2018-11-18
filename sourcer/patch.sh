@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-patch -p0 < ./patch/*
+patch -p1 < ./patch/*
 
 # end of file

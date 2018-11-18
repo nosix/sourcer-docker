@@ -1,33 +1,7 @@
-Index: src/main/client/components/parts/AceEditor.tsx
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- src/main/client/components/parts/AceEditor.tsx	(revision 17d8159d60e188a37db8ecb05828057d87c2ed6c)
-+++ src/main/client/components/parts/AceEditor.tsx	(date 1542468435000)
-@@ -70,6 +70,15 @@
-     node.removeEventListener('keydown', this.onKeyDown);
-   }
- 
-+  public insert(snippet: string, backCursor: number) {
-+    if (this.editor) {
-+      this.editor.insert(snippet);
-+      const cursor = this.editor.selection.getCursor();
-+      this.editor.gotoLine(cursor.row + 1, cursor.column - backCursor);
-+      this.editor.focus();
-+    }
-+  }
-+
-   public render() {
-     const style = { fontSize: '14px !important', border: '1px solid lightgray' };
-     return (
-Index: src/main/client/components/pages/Edit.tsx
-IDEA additional info:
-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
-<+>UTF-8
-===================================================================
---- src/main/client/components/pages/Edit.tsx	(revision 17d8159d60e188a37db8ecb05828057d87c2ed6c)
-+++ src/main/client/components/pages/Edit.tsx	(date 1542468464000)
+diff --git a/src/main/client/components/pages/Edit.tsx b/src/main/client/components/pages/Edit.tsx
+index 33a4242..c2002b3 100644
+--- a/src/main/client/components/pages/Edit.tsx
++++ b/src/main/client/components/pages/Edit.tsx
 @@ -1,6 +1,6 @@
  import * as React from 'react';
  import { Redirect } from 'react-router-dom';
@@ -36,25 +10,69 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
  
  import { strings } from '../resources/Strings';
  import { UserResponse } from '../../../dts/UserResponse';
-@@ -80,6 +80,12 @@
+@@ -33,6 +33,8 @@ export default class Edit extends React.Component<{}, EditState> {
+   }
+ 
+   private editingSource: string = '';
++  private lastSource: string = '';
++  private minSource: string = 'var bot = function(controller) {};\nreturn bot;';
+ 
+   private onTextChange = (value: string) => {
+     this.editingSource = value;
+@@ -56,7 +58,8 @@ export default class Edit extends React.Component<{}, EditState> {
+     if (!user || user.source === undefined) {
+       return;
+     }
+-    this.editingSource = user.source;
++    this.lastSource = user.source;
++    this.editingSource = this.lastSource;
+     this.setState({
+       user,
+       playerInfo: { name: 'You', source: user.source, color: '#866' },
+@@ -80,7 +83,22 @@ export default class Edit extends React.Component<{}, EditState> {
      this.setState({ redirectToTop: true });
    }
  
 +  public insert(snippet: string, backCursor: number=0) {
 +    return (_event?: React.FormEvent<{}>) => {
-+        (this.refs.editor as AceEditor).insert(snippet, backCursor);
++        (this.refs.editor as AceEditor).insertCode(snippet, backCursor);
 +    };
 +  }
 +
++  public clear(_event?: React.FormEvent<{}>) {
++      (this.refs.editor as AceEditor).setCode(this.minSource);
++  }
++
++  public restore(_event?: React.FormEvent<{}>) {
++      (this.refs.editor as AceEditor).setCode(this.lastSource);
++  }
++
    public reload(_event?: React.FormEvent<{}>) {
++    this.lastSource = this.editingSource;
      (this.refs.arena as ArenaTag).onReload();
    }
-@@ -131,7 +137,45 @@
+ 
+@@ -131,7 +149,51 @@ export default class Edit extends React.Component<{}, EditState> {
                  </Button>
                </CardTitle>
              </Card>
 +            <Card shadow={0} style={{ width: '100%', marginBottom: '8px', minHeight: '53px' }}>
 +              <List style={{ paddingTop: '0px', paddingBottom: '0px' }}>
++                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
++                  <Button raised ripple colored onClick={this.clear.bind(this)}>
++                      最初から
++                  </Button>
++                  <Button raised ripple colored onClick={this.restore.bind(this)}>
++                      戻す
++                  </Button>
++                  <Spacer />
++                  <Button raised ripple colored onClick={this.insert('if () {} else {}', 12).bind(this)}>
++                      もし...
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('var x = 0;', 5).bind(this)}>
++                      変数
++                  </Button>
++                </ListItem>
 +                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
 +                  <Button raised ripple colored onClick={this.insert('controller.ascent();').bind(this)}>
 +                      上昇
@@ -79,15 +97,6 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 +                      敵はいる？
 +                  </Button>
 +                </ListItem>
-+                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
-+                  <Spacer />
-+                  <Button raised ripple colored onClick={this.insert('if () {} else {}', 12).bind(this)}>
-+                      もし...
-+                  </Button>
-+                  <Button raised ripple colored onClick={this.insert('var x = 0;', 5).bind(this)}>
-+                      変数
-+                  </Button>
-+                </ListItem>
 +              </List>
 +            </Card>
              <AceEditor
@@ -95,3 +104,30 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
                code={this.editingSource}
                onChange={this.onTextChange}
                onSave={this.save.bind(this)}
+diff --git a/src/main/client/components/parts/AceEditor.tsx b/src/main/client/components/parts/AceEditor.tsx
+index 6bc8289..d2e0f77 100644
+--- a/src/main/client/components/parts/AceEditor.tsx
++++ b/src/main/client/components/parts/AceEditor.tsx
+@@ -70,6 +70,22 @@ export default class AceEditor extends React.Component<AceEditorProps, {}> {
+     node.removeEventListener('keydown', this.onKeyDown);
+   }
+ 
++  public insertCode(code: string, backCursor: number) {
++    if (this.editor) {
++      this.editor.insert(code);
++      const cursor = this.editor.selection.getCursor();
++      this.editor.gotoLine(cursor.row + 1, cursor.column - backCursor);
++      this.editor.focus();
++    }
++  }
++
++  public setCode(code: string) {
++      if (this.editor) {
++        this.editor.setValue(code, -1); // cursorPos is at the document start
++        this.editor.focus();
++      }
++  }
++
+   public render() {
+     const style = { fontSize: '14px !important', border: '1px solid lightgray' };
+     return (
