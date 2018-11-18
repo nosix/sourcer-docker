@@ -18,7 +18,7 @@ services:
       - mongodb
     environment:
       MONGODB_URI: mongodb://mongodb:27017
-      TEAM_GAME: 'true'
+      TEAM_GAME: 'false'
       DISPLAY_LANGUAGE: 'ja'
     ports:
       - '80:5000'
