@@ -7,6 +7,9 @@ RUN npm install -g npm@5.0.3
 RUN git clone https://github.com/benishouga/sourcer.git
 WORKDIR /sourcer
 RUN npm install
+COPY patch.sh .
+COPY patch ./patch
+RUN ./patch.sh
 RUN npm run build
 
 # ポートを開放する

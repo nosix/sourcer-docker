@@ -1,0 +1,97 @@
+Index: src/main/client/components/parts/AceEditor.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/client/components/parts/AceEditor.tsx	(revision 17d8159d60e188a37db8ecb05828057d87c2ed6c)
++++ src/main/client/components/parts/AceEditor.tsx	(date 1542468435000)
+@@ -70,6 +70,15 @@
+     node.removeEventListener('keydown', this.onKeyDown);
+   }
+ 
++  public insert(snippet: string, backCursor: number) {
++    if (this.editor) {
++      this.editor.insert(snippet);
++      const cursor = this.editor.selection.getCursor();
++      this.editor.gotoLine(cursor.row + 1, cursor.column - backCursor);
++      this.editor.focus();
++    }
++  }
++
+   public render() {
+     const style = { fontSize: '14px !important', border: '1px solid lightgray' };
+     return (
+Index: src/main/client/components/pages/Edit.tsx
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/main/client/components/pages/Edit.tsx	(revision 17d8159d60e188a37db8ecb05828057d87c2ed6c)
++++ src/main/client/components/pages/Edit.tsx	(date 1542468464000)
+@@ -1,6 +1,6 @@
+ import * as React from 'react';
+ import { Redirect } from 'react-router-dom';
+-import { Grid, Cell, Button, Icon, Card, CardTitle, Snackbar, Spacer } from 'react-mdl';
++import { Grid, Cell, Button, Icon, Card, CardTitle, Snackbar, Spacer, List, ListItem } from 'react-mdl';
+ 
+ import { strings } from '../resources/Strings';
+ import { UserResponse } from '../../../dts/UserResponse';
+@@ -80,6 +80,12 @@
+     this.setState({ redirectToTop: true });
+   }
+ 
++  public insert(snippet: string, backCursor: number=0) {
++    return (_event?: React.FormEvent<{}>) => {
++        (this.refs.editor as AceEditor).insert(snippet, backCursor);
++    };
++  }
++
+   public reload(_event?: React.FormEvent<{}>) {
+     (this.refs.arena as ArenaTag).onReload();
+   }
+@@ -131,7 +137,45 @@
+                 </Button>
+               </CardTitle>
+             </Card>
++            <Card shadow={0} style={{ width: '100%', marginBottom: '8px', minHeight: '53px' }}>
++              <List style={{ paddingTop: '0px', paddingBottom: '0px' }}>
++                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
++                  <Button raised ripple colored onClick={this.insert('controller.ascent();').bind(this)}>
++                      上昇
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('controller.descent();').bind(this)}>
++                      下降
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('controller.fireLaser(0, 1);').bind(this)}>
++                      攻撃
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('controller.turn();').bind(this)}>
++                      反転
++                  </Button>
++                  <Spacer />
++                  <Button raised ripple colored onClick={this.insert('controller.altitude() < 50').bind(this)}>
++                      高度は？
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('controller.frame() % 10 === 0').bind(this)}>
++                      何回目？
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('controller.scanEnemy(180, 180)').bind(this)}>
++                      敵はいる？
++                  </Button>
++                </ListItem>
++                <ListItem style={{ width: '100%', paddingTop: '0px', paddingBottom: '0px' }}>
++                  <Spacer />
++                  <Button raised ripple colored onClick={this.insert('if () {} else {}', 12).bind(this)}>
++                      もし...
++                  </Button>
++                  <Button raised ripple colored onClick={this.insert('var x = 0;', 5).bind(this)}>
++                      変数
++                  </Button>
++                </ListItem>
++              </List>
++            </Card>
+             <AceEditor
++              ref="editor"
+               code={this.editingSource}
+               onChange={this.onTextChange}
+               onSave={this.save.bind(this)}
