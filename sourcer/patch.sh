@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
-patch -p1 < ./patch/*
+find ./patch -type f -name "*.patch" | xargs cat | patch -p1
 
 # end of file
