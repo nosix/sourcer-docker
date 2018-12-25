@@ -1,3 +1,16 @@
+From 26d511747e578f077e3d3a6f56b8ff59359449fb Mon Sep 17 00:00:00 2001
+From: nosix <nosix@users.noreply.github.com>
+Date: Tue, 25 Dec 2018 13:55:03 +0900
+Subject: [PATCH] kids-support
+
+---
+ src/main/client/components/pages/Edit.tsx     | 66 ++++++++++++++++++-
+ .../client/components/parts/AceEditor.tsx     | 16 +++++
+ src/main/client/components/resources/En.ts    | 11 ++++
+ src/main/client/components/resources/Ja.ts    | 11 ++++
+ src/main/dts/StringResource.d.ts              | 11 ++++
+ 5 files changed, 113 insertions(+), 2 deletions(-)
+
 diff --git a/src/main/client/components/pages/Edit.tsx b/src/main/client/components/pages/Edit.tsx
 index 33a4242..40bd6ce 100644
 --- a/src/main/client/components/pages/Edit.tsx
@@ -193,3 +206,6 @@ index 1c6407c..b2d20ff 100644
  }
  
  type ResourceId = keyof StringResource;
+-- 
+2.17.2 (Apple Git-113)
+

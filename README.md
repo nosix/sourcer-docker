@@ -14,7 +14,8 @@ Access to [`http://localhost/`](http://localhost/).
 
 ```bash
 $ git clone https://github.com/benishouga/sourcer.git
-# Edit source code
 $ cd sourcer
-$ git diff > order_name.patch
+# Edit source code
+$ git commit
+$ git format-patch -1 HEAD
 ```

@@ -9,6 +9,8 @@ WORKDIR /sourcer
 RUN npm install
 COPY patch.sh .
 COPY patch ./patch
+RUN git config --global user.email "sourcer@fake.com"
+RUN git config --global user.name "Sourcer"
 RUN ./patch.sh
 RUN npm run build
 
